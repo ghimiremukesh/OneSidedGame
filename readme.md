@@ -15,3 +15,8 @@ distribution is updated.
 ### Environment Setup
 Install the conda environment using `conda env create -f environment.yml`
 
+
+### TODOS
+- Implement P2's strategy
+- Include demo for non-revealing game
+- Add result plots
