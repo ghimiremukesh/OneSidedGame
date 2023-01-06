@@ -1,6 +1,5 @@
 # game settings and constants
 import itertools
-
 import numpy as np
 
 NUM_STATES = 5

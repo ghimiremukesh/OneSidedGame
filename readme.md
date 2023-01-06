@@ -12,3 +12,6 @@ distribution is updated.
 - `simulate_game.py` simulates one game
 - `utils.py` contains utility functions
 
+### Environment Setup
+Install the conda environment using `conda env create -f environment.yml`
+
