@@ -1,0 +1,22 @@
+# Ignore PyCharm files
+.idea/
+
+# Ignore compiled files
+__pycache__/
+*.py[cod]
+
+# Ignore distribution / packaging
+*.egg-info/
+dist/
+build/
+
+# Ignore test and coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+
+# Ignore other unnecessary files
+*.log
+*.orig
