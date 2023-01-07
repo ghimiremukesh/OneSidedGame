@@ -7,7 +7,7 @@ from value_functions import revealing_value as get_cav_v
 from solver import optimization
 
 # set nature distribution
-p = 0.5
+p = 0.4
 
 # set Player 1's type: 0 for right, 1 for left
 p1_type = 1
@@ -49,6 +49,10 @@ if __name__=="__main__":
     pay_0[2, 1] = v_next_0[3, 3]
     pay_0[3, 0] = v_next_0[4, 1]
     pay_0[3, 1] = v_next_0[4, 3]
+
+    # debug
+    # print(pay_0)
+    # input("Press return to continue!")
 
     v_0 = np.max(np.min(pay_0, 1))
     a_0 = None
@@ -138,6 +142,8 @@ if __name__=="__main__":
 
     print(f'The current position is: {curr_x}\n')
 
+
+    # test with p
     game = get_av_val(VAL_R_T, VAL_L_T, p=p_t)
     pay_0 = np.zeros((4, 2))
 

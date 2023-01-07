@@ -1,18 +1,19 @@
 # solve the optimization problem
 import numpy as np
 import multiprocess as mp
+import concurrent.futures
 from utils import get_av_val
-from itertools import product
+from itertools import product, zip_longest, repeat
 from value_functions import revealing_value as get_cav_v
 from game_settings import VAL_L_T, VAL_R_T, STATES, NUM_STATES
 
-def optimization(p, v_curr, curr_x, game_dict):
 
+def optimization(p, v_curr, curr_x, game_dict):
     def constraint(var):
         lam_1 = var[0]
         lam_2 = 1 - lam_1
         p_1 = var[1]
-        p_2 = (p - lam_1 * p_1)/lam_2
+        p_2 = (p - lam_1 * p_1) / lam_2
 
         lam_j = np.array([[lam_1], [lam_2]])
         p_j = np.array([[p_1], [p_2]])
@@ -134,6 +135,32 @@ def optimization(p, v_curr, curr_x, game_dict):
 
     res = (l_1, p_1)
 
+    # # chat gpt's solution
+    # # Generate a grid of values for lambda1 and lambda2
+    # lam1, lam2 = np.meshgrid(np.linspace(1e-6, 0.999999, 200), np.linspace(1e-6, 0.999999, 200))
+    #
+    # # Flatten the grid of values into a single array
+    # grid = np.stack((lam1, lam2), axis=-1).reshape(-1, 2)
+    #
+    # # Filter the grid to only include values that satisfy the constraint
+    # reduced = filter(constraint, grid)
+    #
+    # # Initialize variables to store the minimum value and corresponding lambda1 and lambda2 values
+    # l_1 = float('inf')
+    # p_1 = float('inf')
+    # curr_min = float('inf')
+    #
+    # # Use the multiprocessing.Pool to process the objective function in parallel
+    # with mp.Pool(mp.cpu_count()) as pool:
+    #     res = pool.imap_unordered(objective, reduced)
+    #
+    #     for lam_1, P_1, val in res:
+    #         if val < curr_min:
+    #             curr_min = val
+    #             l_1 = lam_1
+    #             p_1 = P_1
+    #
+    # res = (l_1, p_1)
+
+
     return res
-
-
