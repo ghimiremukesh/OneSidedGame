@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 
 
 def non_revealing_value(timestep, game_dict, states, return_state=0):
-    def get_game_dict(t, g, s, value_fun=non_revealing_value):
+    def get_game_dict(t, g, s, value_fun=non_revealing_value):  # this is a workaround for when we need v at t=1
         return value_fun(t, g, s, return_state=1)
 
     if timestep > 1 and return_state == 0:
@@ -24,6 +24,8 @@ def non_revealing_value(timestep, game_dict, states, return_state=0):
     p1_amap = {'0': 'l', '1': 'L', '2': 'r', '3': 'R'}
     p2_amap = {'0': 'l', '1': 'r'}
 
+    # populate 'temp' with values based on minimax. i, j correspond to the state. p2 can only move 1 step at a time
+    # hence, j goes from timestep to #states - timestep
     for i in range(NUM_STATES):
         for j in range(timestep, NUM_STATES - timestep):
             payoff = np.zeros((4, 2))
@@ -65,7 +67,7 @@ def non_revealing_value(timestep, game_dict, states, return_state=0):
             else:
                 ac = ''
                 for a in action_idx:
-                    ac += p1_amap[str(a)]
+                    ac += p1_amap[str(a)]  # map action index to action
                 action[i, j] = ac
 
     return temp, action
@@ -75,7 +77,6 @@ def revealing_value(timestep, game_dict, states, p, return_state=0):
     def get_game_dict(t, g, s, ps, value_fun=revealing_value):
         return value_fun(t, g, s, ps, return_state=1)
 
-    # redundant, do not need this during simulation
     if timestep == 1:
         cav_v, _ = non_revealing_value(1, game_dict, states)
         ps = np.linspace(0, 1, 100)
@@ -85,7 +86,9 @@ def revealing_value(timestep, game_dict, states, p, return_state=0):
             av_dict = dict(zip(STATES.flatten(), av_game.flatten()))
             temp, _ = non_revealing_value(1, av_dict, STATES)
             cavs[:, :, i] = temp
-
+        # Now check for each state, the structure of the value and find the cav
+        # if at the given p, the value is on the hull simplex, then it is the cav of v, otherwise cav of v is the max(v)
+        # this is determined using scipy's convexhull
         for row in range(NUM_STATES):
             for col in range(timestep, NUM_STATES-timestep):
                 vals = cavs[row, col, :]
@@ -184,7 +187,9 @@ def revealing_value(timestep, game_dict, states, p, return_state=0):
                 payoff[3, 1] = temp[new_R, j + 1]  # Right right
 
                 cav_v[i, j] = np.max(np.min(payoff, 1))
-
+        # Now check for each state, the structure of the value and find the cav
+        # if at the given p, the value is on the hull simplex, then it is the cav of v, otherwise cav of v is the max(v)
+        # this is determined using scipy's convexhull
         for row in range(NUM_STATES):
             for col in range(timestep, NUM_STATES - timestep):
                 vals = cavs[row, col, :]

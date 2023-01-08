@@ -30,7 +30,7 @@ def optimization(p, v_curr, curr_x, game_dict):
 
         lam_j = np.array([[lam_1], [lam_2]])
         v_next = np.zeros((2, 1))
-        if curr_x == [2, 2]:
+        if curr_x == [2, 2]:  # at the fist-time step, which is t=2, in the code
             game_dict_1 = get_av_val(VAL_R_T, VAL_L_T, p_1)
             game_dict_1 = dict(zip(STATES.flatten(), game_dict_1.flatten()))
             game_dict_2 = get_av_val(VAL_R_T, VAL_L_T, p_2)
@@ -38,8 +38,8 @@ def optimization(p, v_curr, curr_x, game_dict):
             v_next_0 = get_cav_v(1, game_dict_1, STATES, p_1)
             v_next_1 = get_cav_v(1, game_dict_2, STATES, p_2)
 
-            pay_0 = np.zeros((4, 2))
-            pay_1 = np.zeros((4, 2))
+            pay_0 = np.zeros((4, 2))  # payoff table corresponding to p_1
+            pay_1 = np.zeros((4, 2))  # payoff table corresponding to p_2
 
             pay_0[0, 0] = v_next_0[1, 1]
             pay_0[0, 1] = v_next_0[1, 3]
@@ -59,11 +59,11 @@ def optimization(p, v_curr, curr_x, game_dict):
             pay_1[3, 0] = v_next_1[4, 1]
             pay_1[3, 1] = v_next_1[4, 3]
 
-            # do min max on v_next
+            # do maximin on v_next
             v_next[0] = np.max(np.min(pay_0, 1))
             v_next[1] = np.max(np.min(pay_1, 1))
 
-        else:  # that is, some other state in the second time-step
+        else:  # that is, some other state in the second time-step, which is t=1, in the code
 
             i = curr_x[0]
             j = curr_x[1]
@@ -112,11 +112,11 @@ def optimization(p, v_curr, curr_x, game_dict):
             pay_1[3, 0] = v_next_1[new_R, j - 1]  # Right left
             pay_1[3, 1] = v_next_1[new_R, j + 1]  # Right right
 
-            # do min max on v_next
+            # do maximin on v_next
             v_next[0] = np.max(np.min(pay_0, 1))
             v_next[1] = np.max(np.min(pay_1, 1))
 
-        return lam_1, p_1, abs((v_curr - np.matmul(lam_j.T, v_next)).item())
+        return lam_1, p_1, abs((v_curr - np.matmul(lam_j.T, v_next)).item())  # \sum_j \lambda_j v(t=k+1, x', p_j)
 
     lam = np.linspace(1e-6, 0.999999, 200)
     grid = product(lam, repeat=2)
