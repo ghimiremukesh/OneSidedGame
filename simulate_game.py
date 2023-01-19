@@ -10,10 +10,11 @@ from solver import optimization
 p = 0.4
 
 # set Player 1's type: 0 for right, 1 for left
-p1_type = 1
+# pick p1_type at random from the distribution p
+p1_type = random.choices([1, 0], [p, 1-p])[0]
 type_map = {0: 'Right', 1: 'Left'}
 
-stay = bool(int(input('stay in action set (1 or 0)? ')))
+stay = bool(int(input('`stay` (s) in action set (1 or 0)? ')))
 
 average_game = get_av_val(VAL_R_T, VAL_L_T, p=p)
 average_dict = dict(zip(STATES.flatten(), average_game.flatten()))
@@ -90,7 +91,7 @@ if __name__ == "__main__":
 
     if len(a_0_idx) == 1:
         a_0 = a_map[str(a_0_idx[0])]
-    elif len(a_0_idx) == 5:
+    elif len(a_0_idx) == len(a_map):
         a_0 = 'A'
     else:
         ac = ''
@@ -293,7 +294,7 @@ if __name__ == "__main__":
 
     if len(a_0_idx) == 1:
         a_0 = a_map[str(a_0_idx[0])]
-    elif len(a_0_idx) == 4:
+    elif len(a_0_idx) == len(a_map):
         a_0 = 'A'
     else:
         ac = ''
@@ -331,7 +332,7 @@ if __name__ == "__main__":
     a_1_idx = np.where(np.min(pay_1, 1) == v_1)[0]  # check for same values
     if len(a_1_idx) == 1:
         a_1 = a_map[str(a_1_idx[0])]
-    elif len(a_1_idx) == 4:
+    elif len(a_1_idx) == len(a_map):
         a_1 = 'A'
     else:
         ac = ''
@@ -355,7 +356,7 @@ if __name__ == "__main__":
     a0_p = (lam_j * p_1j) / p_i
     a1_p = ((1 - lam_j) * p_2j) / p_i
 
-    print(a_0, a_1)
+    # print(a_0, a_1)
     print(f'At second time-step, P1 with type {type_map[p1_type]} has the following options: \n')
     print(f'P1 could take action {"".join(a_00)} with probability {a0_p:.2f} and move belief to {p_1:.2f}')
     print(f'P1 could take action {"".join(a_11)} with probability {a1_p:.2f} and move belief to {p_2:.2f}\n')
